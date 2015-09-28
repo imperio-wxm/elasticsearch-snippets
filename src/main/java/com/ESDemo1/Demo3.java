@@ -4,26 +4,29 @@ import com.ESDemo1.javabean.AppleBean;
 import com.ESDemo1.utils.JsonUtil;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.count.CountResponse;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 
 /**
- * Created by wxmimperio on 2015/9/25.
- * 批量索引文档
+ * Created by wxmimperio on 2015/9/28.
+ * 检索操作
  */
-public class Demo2 {
+public class Demo3 {
     private Client client;
 
-    public Demo2() {
+    public Demo3() {
         this("localhost");
     }
 
-    public Demo2(String IPAddress) {
+    public Demo3(String IPAddress) {
         //开启嗅探模式
         Settings settings = ImmutableSettings.settingsBuilder()
                 .put("client.transport.sniff", true)
@@ -49,27 +52,27 @@ public class Demo2 {
             System.out.println("批量添加失败");
         } else {
             System.out.println("批量添加成功");
-
-            if (bulkResponse.iterator().hasNext()) {
-                System.out.println(bulkResponse.iterator().next().getIndex());
-                System.out.println(bulkResponse.iterator().next().getType());
-                System.out.println(bulkResponse.iterator().next().getId());
-            }
-            //计数
-            test2(client);
         }
     }
 
-    //计数统计
-    public void test2(Client client) {
-        CountResponse countResponse = client.prepareCount("myinfo1")
-                .setQuery(QueryBuilders.termQuery("color", "yellow")).execute().actionGet();
-        //返回被查询命中的索引文档数量
-        System.out.println(countResponse.getCount());
-    }
+    public void test2() {
+        SearchResponse searchResponse = client.prepareSearch("myinfo1","myinfo2").setTypes("info1","info2")
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
+                .setQuery(QueryBuilders.termQuery("color","yellow"))
+                .setPostFilter(FilterBuilders.rangeFilter("size").from(20).to(60))
+                .setFrom(0)
+                .setSize(100)
+                .setExplain(true)
+                .execute().actionGet();
 
+        //遍历查询结果
+        for(SearchHit hit:searchResponse.getHits()) {
+            System.out.println(hit.getSourceAsString());
+        }
+    }
     public static void main(String[] args) {
-        Demo2 demo2 = new Demo2();
-        demo2.test1();
+        Demo3 demo3 = new Demo3();
+        demo3.test1();
+        demo3.test2();
     }
 }
