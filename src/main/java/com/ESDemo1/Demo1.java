@@ -2,14 +2,24 @@ package com.ESDemo1;
 
 import com.ESDemo1.javabean.AppleBean;
 import com.ESDemo1.utils.JsonUtil;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by wxmimperio on 2015/9/25.
@@ -44,12 +54,43 @@ public class Demo1 {
 
         /* 获取文档索引 _source
          * 常用API
-         * get(GetRequest request)、get(GetRequest request,ActionListener<GetRequest>listener)
+         * get(GetRequest request)、get(GetRequest request,ActionListener<GetResponse>listener)
          * prepareGet()、prepareGet(String index, String type, String id)
-         * multiGet(MultiGetRequest request)、multiGet(MultiGetRequest request,ActionListener<MultiGetRequest>listener)
+         * multiGet(MultiGetRequest request)、multiGet(MultiGetRequest request,ActionListener<MultiGetResponse>listener)
          * parpareMultiGet()
          */
         GetResponse getResponse = client.prepareGet("myinfo1", "info1", "AVADYFrKItc_nLsmMzK8").execute().actionGet();
+
+
+      /*UpdateRequest updateRequest = new UpdateRequest();
+        updateRequest.index("myinfo1");
+        updateRequest.type("info1");
+        updateRequest.id("AVADYFrKItc_nLsmMzK8");
+
+        try {
+            updateRequest.doc(
+                    XContentFactory.jsonBuilder().startObject()
+                            .field("color", "green")
+                            .field("size", 10)
+                            .field("prize", 100.00f)
+                            .endObject()
+            );
+            client.update(updateRequest).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }*/
+
+        /* 删除索引文档
+         * 常用API
+         * prepareDelete()、prepareDelete(String index, String type, String id)
+         * delete(DeleteRequest request)、delete(DeleteRequest request, ActionListener<DeleteResponse>listener)
+         * deleteByQuery(DeleteByQueryRequest request)、deleteByQuery(DeleteByQueryRequest request, ActionListener<DeleteByQueryResponse>listener)
+         */
+        DeleteResponse deleteResponse = client.prepareDelete("myinfo1", "info1", "AVADYFrKItc_nLsmMzK8").execute().actionGet();
 
         String _index = response.getIndex();
         String _type = response.getType();
@@ -58,6 +99,13 @@ public class Demo1 {
 
         System.out.println(_index + "\n" + _type + "\n" + _id + "\n" + _version);
         System.out.println(getResponse.getSource());
+
+        boolean isFound = deleteResponse.isFound();
+        //返回索引是否存在
+        System.out.println(isFound);
+        Set headers = deleteResponse.getHeaders();
+        //返回头响应
+        System.out.println(headers);
     }
 
     public static void main(String[] args) {
