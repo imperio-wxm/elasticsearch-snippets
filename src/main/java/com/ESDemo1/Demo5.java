@@ -143,6 +143,82 @@ public class Demo5 {
         }
     }
 
+    /* TypeFilter
+     * 返回指定类型的所有文档
+     * 当查询被指定向到多个索引或者一个有大量不同数据类型的索引上时，该过滤器是有用的
+     */
+    public void TypeFilter() {
+        SearchResponse searchResponse = client.prepareSearch("myinfo2")
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setPostFilter(FilterBuilders.typeFilter("info2"))
+                .setFrom(0)
+                .setSize(10)
+                .setExplain(true)
+                .execute().actionGet();
+
+        System.out.println("This is TypeFilter");
+        for (SearchHit hit : searchResponse.getHits().getHits()) {
+            System.out.println(hit.getSourceAsString());
+        }
+    }
+
+    public void NotFilter() {
+        SearchResponse searchResponse = client.prepareSearch("myinfo2")
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setPostFilter(FilterBuilders.notFilter(
+                        FilterBuilders.rangeFilter("size").from(0).to(20)
+                ))
+                .setFrom(0)
+                .setSize(10)
+                .setExplain(true)
+                .execute().actionGet();
+
+        System.out.println("This is NotFilter");
+        for (SearchHit hit : searchResponse.getHits().getHits()) {
+            System.out.println(hit.getSourceAsString());
+        }
+    }
+
+    public void OrFilter() {
+        SearchResponse searchResponse = client.prepareSearch("myinfo2")
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setPostFilter(FilterBuilders.orFilter(
+                        //第一个条件
+                        FilterBuilders.termFilter("color", "blue"),
+                        //第二个条件
+                        FilterBuilders.termFilter("size", 10)
+                ))
+                .setFrom(0)
+                .setSize(10)
+                .setExplain(true)
+                .execute().actionGet();
+
+        System.out.println("This is OrFilter");
+        for (SearchHit hit : searchResponse.getHits().getHits()) {
+            System.out.println(hit.getSourceAsString());
+        }
+    }
+
+    public void AndFilter() {
+        SearchResponse searchResponse = client.prepareSearch("myinfo2")
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setPostFilter(FilterBuilders.andFilter(
+                        //第一个条件
+                        FilterBuilders.prefixFilter("color", "blue"),
+                        //第二个条件
+                        FilterBuilders.termFilter("size", 99)
+                ))
+                .setFrom(0)
+                .setSize(10)
+                .setExplain(true)
+                .execute().actionGet();
+
+        System.out.println("This is AndFilter");
+        for (SearchHit hit : searchResponse.getHits().getHits()) {
+            System.out.println(hit.getSourceAsString());
+        }
+    }
+
     public static void main(String[] args) {
 
         Demo5 demo5 = new Demo5();
@@ -151,5 +227,9 @@ public class Demo5 {
         demo5.ExistsFilter();
         demo5.QueryFilter();
         demo5.RangeFilter();
+        demo5.TypeFilter();
+        demo5.NotFilter();
+        demo5.OrFilter();
+        demo5.AndFilter();
     }
 }
