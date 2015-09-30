@@ -6,12 +6,12 @@ package com.ESDemo1.javabean;
 public class AppleBean {
     private String color;
     private int size;
-    private float prize;
+    private float price;
 
-    public AppleBean(String color, int size, float prize) {
+    public AppleBean(String color, int size, float price) {
         this.color = color;
         this.size = size;
-        this.prize = prize;
+        this.price = price;
     }
 
     public String getColor() {
@@ -30,11 +30,11 @@ public class AppleBean {
         this.size = size;
     }
 
-    public float getPrize() {
-        return prize;
+    public float getprice() {
+        return price;
     }
 
-    public void setPrize(float prize) {
-        this.prize = prize;
+    public void setprice(float price) {
+        this.price = price;
     }
 }

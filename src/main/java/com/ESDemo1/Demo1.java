@@ -2,24 +2,15 @@ package com.ESDemo1;
 
 import com.ESDemo1.javabean.AppleBean;
 import com.ESDemo1.utils.JsonUtil;
-import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-
-import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by wxmimperio on 2015/9/25.
@@ -72,7 +63,7 @@ public class Demo1 {
                     XContentFactory.jsonBuilder().startObject()
                             .field("color", "green")
                             .field("size", 10)
-                            .field("prize", 100.00f)
+                            .field("price", 100.00f)
                             .endObject()
             );
             client.update(updateRequest).get();

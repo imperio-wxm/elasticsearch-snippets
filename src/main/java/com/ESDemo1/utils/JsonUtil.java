@@ -15,7 +15,7 @@ public class JsonUtil {
             jsonBuilder.startObject()
                     .field("color",appleBean.getColor())
                     .field("size",appleBean.getSize())
-                    .field("prize",appleBean.getPrize())
+                    .field("price",appleBean.getprice())
                     .endObject();
             jsonData = jsonBuilder.string();
             System.out.println(jsonData);
