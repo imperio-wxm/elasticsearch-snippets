@@ -1,2 +1,0 @@
-# ElasticsearchDemo
-My Elasticsearch Demo
