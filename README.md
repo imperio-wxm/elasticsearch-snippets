@@ -4,6 +4,6 @@
 
 # elasticsearch 6.2.4
 
-> The version I am using now, if you upgrade 7.x will continue to update.
+> The version I am using now, if upgrade 7.x will continue to update.
 
-- [Project Documentation](https://github.com/imperio-wxm/elasticsearch-snippets/blob/master/elasticsearch-6.2.4/README.md)
+- [Project Documentation](https://github.com/imperio-wxm/elasticsearch-snippets/blob/master/elasticsearch-6.2.4)
