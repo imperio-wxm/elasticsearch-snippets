@@ -7,15 +7,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EsConfig {
 
-    @Value("es.connector.servers")
+    @Value("${es.connector.servers}")
     private String servers;
-    @Value("es.connector.userName")
+    @Value("${es.connector.username}")
     private String userName;
-    @Value("es.connector.password")
+    @Value("${es.connector.password}")
     private String password;
-    @Value("es.connector.max-retry-timeout-millis")
+    @Value("${es.connector.max-retry-timeout-millis}")
     private Integer maxRetryTimeoutMillis;
-    @Value("es.connector.socket-timeout")
+    @Value("${es.connector.socket-timeout}")
     private Integer socketTimeout;
 
     public EsConfig() {

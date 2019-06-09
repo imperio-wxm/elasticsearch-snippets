@@ -25,7 +25,7 @@ public class RestClientConnector implements Closeable {
     private final static Logger logger = LoggerFactory.getLogger(RestClientConnector.class);
 
     private EsConfig esConfig;
-    private RestHighLevelClient client;
+    private RestHighLevelClient restHighLevelClient;
 
     @Autowired
     public RestClientConnector(EsConfig esConfig) {
@@ -33,14 +33,20 @@ public class RestClientConnector implements Closeable {
     }
 
     @PostConstruct
-    public void initClient() throws EsException {
-        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(esConfig.getUserName(), esConfig.getPassword()));
-        RestClientBuilder restClientBuilder = RestClient.builder(getHttpHost());
-        restClientBuilder.setMaxRetryTimeoutMillis(esConfig.getMaxRetryTimeoutMillis());
-        restClientBuilder.setRequestConfigCallback(requestConfig -> requestConfig.setSocketTimeout(esConfig.getSocketTimeout()));
-        restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
-        this.client = new RestHighLevelClient(restClientBuilder);
+    public RestHighLevelClient initClient() {
+        try {
+            final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(esConfig.getUserName(), esConfig.getPassword()));
+            RestClientBuilder restClientBuilder = RestClient.builder(getHttpHost());
+            restClientBuilder.setMaxRetryTimeoutMillis(esConfig.getMaxRetryTimeoutMillis());
+            restClientBuilder.setRequestConfigCallback(requestConfig -> requestConfig.setSocketTimeout(esConfig.getSocketTimeout()));
+            restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
+            restHighLevelClient = new RestHighLevelClient(restClientBuilder);
+            logger.info(String.format("Connected es client = %s.", esConfig.getServers()));
+        } catch (EsException e) {
+            logger.error("Can not get es client.", e);
+        }
+        return restHighLevelClient;
     }
 
     private HttpHost[] getHttpHost() throws EsException {
@@ -56,6 +62,10 @@ public class RestClientConnector implements Closeable {
 
     @Override
     public void close() throws IOException {
-        this.client.close();
+        this.restHighLevelClient.close();
+    }
+
+    public RestHighLevelClient getRestHighLevelClient() {
+        return restHighLevelClient;
     }
 }

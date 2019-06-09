@@ -2,12 +2,12 @@ spring:
   application:
     name: rest-high-level-client
 server:
-  port: 70010
+  port: 7010
 
 es:
   connector:
     servers: 192.168.1.110:9200
     max-retry-timeout-millis: 60000
     socket-timeout: 60000
-    user:
+    username:
     password:
