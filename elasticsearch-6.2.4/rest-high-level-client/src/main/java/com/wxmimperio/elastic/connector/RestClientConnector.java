@@ -12,16 +12,15 @@ import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.stream.Stream;
 
 @Component
-public class RestClientConnector implements Closeable {
+public class RestClientConnector implements DisposableBean {
     private final static Logger logger = LoggerFactory.getLogger(RestClientConnector.class);
 
     private EsConfig esConfig;
@@ -61,8 +60,9 @@ public class RestClientConnector implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void destroy() throws Exception {
         this.restHighLevelClient.close();
+        logger.info("Close es client.");
     }
 
     public RestHighLevelClient getRestHighLevelClient() {
