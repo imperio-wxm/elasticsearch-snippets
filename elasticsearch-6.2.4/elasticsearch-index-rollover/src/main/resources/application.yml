@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: elasticearch-index-rollover
+server:
+  port: 7011
+
+es:
+  connector:
+    servers:
+    max-retry-timeout-millis: 60000
+    socket-timeout: 60000
+    username: elastic
+    password: elastic
